@@ -1,0 +1,305 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load product_tags %}
+
+{% block title %}Subhalaxmi Collections - Elegant Fashion for Modern Women{% endblock %}
+
+{% block description %}Discover stunning women's fashion at Subhalaxmi Collections. From elegant dresses to contemporary styles, find pieces that celebrate your unique beauty and confidence.{% endblock %}
+
+{% block extra_head %}
+<!-- Preload critical images for better LCP -->
+<link rel="preload" as="image" href="{% static 'images/hero-bg.jpg' %}">
+<!-- Service Worker Registration -->
+<script>
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/static/js/sw.js')
+            .then(registration => console.log('SW registered'))
+            .catch(error => console.log('SW registration failed'));
+    });
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="home-page">
+  
+  <!-- Hero Section with optimized loading -->
+  <section class="home-hero">
+    <div class="hero-background">
+      <div class="hero-overlay"></div>
+      <!-- Use optimized image loading -->
+      <picture class="hero-image">
+        <source media="(min-width: 768px)" srcset="{% static 'images/hero-bg-large.webp' %}" type="image/webp">
+        <source media="(min-width: 768px)" srcset="{% static 'images/hero-bg-large.jpg' %}">
+        <source media="(max-width: 767px)" srcset="{% static 'images/hero-bg-mobile.webp' %}" type="image/webp">
+        <img src="{% static 'images/hero-bg-mobile.jpg' %}" alt="Elegant fashion collection hero image" loading="eager">
+      </picture>
+      <div class="hero-content">
+        <div class="hero-text">
+          <h1 class="hero-title">
+            <span class="highlight">Subhalaxmi</span> Collections
+          </h1>
+          <p class="hero-subtitle">Where Elegance Meets Contemporary Style</p>
+          <p class="hero-description">
+            Discover fashion that empowers, inspires, and celebrates the beautiful, confident woman you are. 
+            Every piece is crafted with love, designed with intention, and created to make you shine.
+          </p>
+          <div class="hero-buttons">
+            <a href="{% url 'store:product_list' %}" class="btn-hero btn-primary" rel="prefetch">
+              <span>✨ Explore Collection</span>
+            </a>
+            <a href="{% url 'store:about' %}" class="btn-hero btn-secondary" rel="prefetch">
+              <span>💎 Our Story</span>
+            </a>
+          </div>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-item">
+            <span class="stat-number">7+</span>
+            <span class="stat-label">Years of Excellence</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">15K+</span>
+            <span class="stat-label">Happy Customers</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">1000+</span>
+            <span class="stat-label">Unique Designs</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Products Section -->
+  <section class="featured-products">
+    <div class="content-wrapper">
+      <div class="section-header">
+        <h2>✨ Featured Collection</h2>
+        <p>Handpicked pieces that define elegance and contemporary style</p>
+      </div>
+      
+      {% if featured_products %}
+        <div class="featured-simple-grid">
+          {% for product in featured_products|slice:":4" %}
+            <div class="simple-product-item fade-in-up">
+              <div class="simple-product-image">
+                {% with product.get_primary_image as product_image %}
+                  {% if product_image %}
+                    <img 
+                      src="{{ product_image.image.url }}" 
+                      alt="{{ product_image.alt_text|default:product.name }}" 
+                      class="product-img"
+                      loading="lazy"
+                      width="250"
+                      height="250">
+                  {% else %}
+                    <div class="product-placeholder">
+                      <span>👗</span>
+                    </div>
+                  {% endif %}
+                {% endwith %}
+              </div>
+              <div class="simple-product-info">
+                <h3 class="product-name">{{ product.name }}</h3>
+                <div class="product-price">${{ product.price }}</div>
+                <a href="{% url 'store:product_detail' product.pk %}" class="simple-btn">View Details</a>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+        
+        <div class="featured-footer">
+          <a href="{% url 'store:product_list' %}" class="btn btn-primary">
+            <span>👗 View All Products</span>
+          </a>
+        </div>
+      {% else %}
+        <div class="no-products">
+          <div class="no-products-content">
+            <span class="no-products-icon">🌟</span>
+            <h3>New Collection Coming Soon!</h3>
+            <p>We're adding beautiful new pieces to our collection. Stay tuned for amazing fashion finds!</p>
+            <a href="{% url 'store:contact' %}" class="btn btn-primary">Get Notified</a>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </section>
+
+  <!-- Why Choose Us Section -->
+  <section class="why-choose-us">
+    <div class="content-wrapper">
+      <div class="section-header">
+        <h2>💎 Why Choose Subhalaxmi Collections?</h2>
+        <p>What makes us special in the world of fashion</p>
+      </div>
+      
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">👑</div>
+          <h3>Premium Quality</h3>
+          <p>Each piece is crafted with the finest materials and attention to detail, ensuring lasting beauty and comfort.</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">🎨</div>
+          <h3>Unique Designs</h3>
+          <p>Our exclusive designs blend contemporary trends with timeless elegance, making you stand out beautifully.</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">💖</div>
+          <h3>Perfect Fit</h3>
+          <p>Thoughtfully designed sizes and cuts that celebrate and flatter every woman's unique beauty.</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">🌱</div>
+          <h3>Sustainable Fashion</h3>
+          <p>Committed to environmentally conscious practices that don't compromise on style or quality.</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">💝</div>
+          <h3>Personal Service</h3>
+          <p>Dedicated customer care and styling advice to help you find pieces that speak to your soul.</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">✨</div>
+          <h3>Confidence Boost</h3>
+          <p>Fashion that makes you feel empowered, beautiful, and ready to conquer the world.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section class="testimonials">
+    <div class="content-wrapper">
+      <div class="section-header">
+        <h2>💌 What Our Customers Say</h2>
+        <p>Real stories from women who love our collections</p>
+      </div>
+      
+      <div class="testimonials-grid">
+        <div class="testimonial-card">
+          <div class="testimonial-content">
+            <div class="stars">⭐⭐⭐⭐⭐</div>
+            <p>"Absolutely stunning pieces! Every time I wear something from Subhalaxmi Collections, I feel like the most confident version of myself. The quality is exceptional and the designs are so unique."</p>
+          </div>
+          <div class="testimonial-author">
+            <div class="author-avatar">👩‍💼</div>
+            <div class="author-info">
+              <h4>Priya Sharma</h4>
+              <span>Fashion Enthusiast</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="testimonial-card">
+          <div class="testimonial-content">
+            <div class="stars">⭐⭐⭐⭐⭐</div>
+            <p>"The attention to detail is incredible. I've been a customer for 3 years now and every purchase has exceeded my expectations. This is my go-to brand for special occasions and everyday elegance."</p>
+          </div>
+          <div class="testimonial-author">
+            <div class="author-avatar">👩‍🎨</div>
+            <div class="author-info">
+              <h4>Anita Desai</h4>
+              <span>Regular Customer</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="testimonial-card">
+          <div class="testimonial-content">
+            <div class="stars">⭐⭐⭐⭐⭐</div>
+            <p>"Finally found a brand that understands women! The fits are perfect, the styles are timeless yet modern, and the customer service is outstanding. Highly recommend to every woman."</p>
+          </div>
+          <div class="testimonial-author">
+            <div class="author-avatar">👩‍💻</div>
+            <div class="author-info">
+              <h4>Meera Patel</h4>
+              <span>Loyal Customer</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter Section -->
+  <section class="newsletter">
+    <div class="content-wrapper">
+      <div class="newsletter-content">
+        <div class="newsletter-text">
+          <h2>💫 Stay in Style</h2>
+          <p>Be the first to know about new collections, exclusive offers, and styling tips. Join our community of fashion-forward women!</p>
+        </div>
+        <div class="newsletter-form">
+          <form class="email-signup">
+            <div class="input-group">
+              <input type="email" placeholder="Enter your email address" required>
+              <button type="submit" class="btn btn-primary">
+                <span>✨ Subscribe</span>
+              </button>
+            </div>
+            <p class="privacy-note">We respect your privacy. Unsubscribe at any time.</p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action Section -->
+  <section class="cta-section">
+    <div class="content-wrapper">
+      <div class="cta-content">
+        <h2>Ready to Discover Your Perfect Style?</h2>
+        <p>Join thousands of women who have found their signature look with Subhalaxmi Collections. Your journey to effortless elegance starts here.</p>
+        <div class="cta-buttons">
+          <a href="{% url 'store:product_list' %}" class="btn btn-primary btn-large">
+            <span>🛍️ Shop Now</span>
+          </a>
+          <a href="{% url 'store:about' %}" class="btn btn-secondary btn-large">
+            <span>📖 Learn More</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Newsletter form
+    const newsletterForm = document.querySelector('.email-signup');
+    if (newsletterForm) {
+        newsletterForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = this.querySelector('input[type="email"]').value;
+            // You can add your newsletter signup logic here
+            alert('Thank you for subscribing! We\'ll keep you updated with our latest collections.');
+            this.reset();
+        });
+    }
+    
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,276 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Subhalaxmi Collections - Elegant Fashion for Women{% endblock %}</title>
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="{% static 'css/styles.css' %}" as="style">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" as="style">
+    
+    <!-- DNS prefetch for external resources -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    
+    <!-- Critical CSS (inline small critical styles) -->
+    <style>
+        /* Critical above-the-fold styles */
+        body { margin: 0; font-family: 'Inter', sans-serif; background: #fff; }
+        .navbar { background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: fixed; top: 0; width: 100%; z-index: 1000; }
+        .nav-container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; height: 70px; }
+        .nav-logo a { font-size: 1.5rem; font-weight: 700; text-decoration: none; color: #333; }
+        main { margin-top: 70px; min-height: calc(100vh - 70px); }
+        .loading { opacity: 0; }
+        .loaded { opacity: 1; transition: opacity 0.3s ease; }
+    </style>
+    
+    <!-- Main CSS file (non-blocking) -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="{% static 'css/styles.css' %}"></noscript>
+    
+    <!-- Fonts (non-blocking) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
+    
+    <!-- Meta tags for SEO and performance -->
+    <meta name="description" content="{% block description %}Discover elegant and stylish fashion for women at Subhalaxmi Collections. Quality clothing that makes you feel confident and beautiful.{% endblock %}">
+    <meta name="keywords" content="women fashion, elegant clothing, style, fashion collection, women's wear">
+    <meta name="author" content="Subhalaxmi Collections">
+    
+    <!-- Favicon and icons -->
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/apple-touch-icon.png' %}">
+    
+    <!-- Performance hints -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="theme-color" content="#667eea">
+    
+    <!-- Resource hints for better performance -->
+    <link rel="prefetch" href="{% url 'store:product_list' %}">
+    <link rel="prefetch" href="{% url 'store:about' %}">
+    
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="loading">
+    <header>
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <a href="/" aria-label="Subhalaxmi Collections Home">Subhalaxmi Collections</a>
+                </div>
+                
+                <!-- Mobile Menu Toggle -->
+                <button class="nav-toggle" id="mobile-menu" aria-label="Toggle mobile menu" aria-expanded="false">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </button>
+                
+                <!-- Navigation Menu -->
+                <ul class="nav-menu" id="nav-menu" role="navigation">
+                    <li class="nav-item">
+                        <a href="/" class="nav-link" aria-label="Home page">🏠 Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'store:product_list' %}" class="nav-link" aria-label="Shop products">👗 Shop</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'store:about' %}" class="nav-link" aria-label="About us">💎 About Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'store:contact' %}" class="nav-link" aria-label="Contact us">💌 Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main class="fade-in-up" role="main">
+        {% block content %}
+        <!-- Page-specific content goes here -->
+        {% endblock %}
+    </main>
+
+        </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Subhalaxmi Collections</h3>
+                <p>Elegant fashion for the modern woman. Quality, style, and comfort in every piece.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="Facebook" rel="noopener">📘</a>
+                    <a href="#" aria-label="Instagram" rel="noopener">📸</a>
+                    <a href="#" aria-label="Twitter" rel="noopener">🐦</a>
+                    <a href="#" aria-label="Pinterest" rel="noopener">📌</a>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="/" rel="prefetch">Home</a></li>
+                    <li><a href="{% url 'store:product_list' %}" rel="prefetch">Shop</a></li>
+                    <li><a href="{% url 'store:about' %}" rel="prefetch">About Us</a></li>
+                    <li><a href="{% url 'store:contact' %}" rel="prefetch">Contact</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h4>Customer Service</h4>
+                <ul>
+                    <li><a href="#" rel="noopener">Size Guide</a></li>
+                    <li><a href="#" rel="noopener">Returns</a></li>
+                    <li><a href="#" rel="noopener">Shipping Info</a></li>
+                    <li><a href="#" rel="noopener">FAQ</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h4>Contact Info</h4>
+                <div class="contact-info">
+                    <p>📧 info@subhalaxmi.com</p>
+                    <p>📞 +91 123 456 7890</p>
+                    <p>📍 Fashion District, Mumbai</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2024 Subhalaxmi Collections. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Optimized JavaScript - loaded async at bottom -->
+    <script>
+        // Immediate DOM load optimization
+        document.body.classList.remove('loading');
+        document.body.classList.add('loaded');
+        
+        // Performance-optimized mobile menu with debouncing
+        const mobileMenu = document.getElementById('mobile-menu');
+        const navMenu = document.getElementById('nav-menu');
+        
+        if (mobileMenu && navMenu) {
+            let isMenuOpen = false;
+            
+            const toggleMenu = () => {
+                isMenuOpen = !isMenuOpen;
+                mobileMenu.classList.toggle('is-active');
+                navMenu.classList.toggle('active');
+                mobileMenu.setAttribute('aria-expanded', isMenuOpen);
+                
+                // Prevent body scroll when menu is open
+                document.body.style.overflow = isMenuOpen ? 'hidden' : '';
+            };
+            
+            mobileMenu.addEventListener('click', toggleMenu);
+            
+            // Close menu when clicking outside
+            document.addEventListener('click', (e) => {
+                if (isMenuOpen && !navMenu.contains(e.target) && !mobileMenu.contains(e.target)) {
+                    toggleMenu();
+                }
+            });
+            
+            // Close menu on escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && isMenuOpen) {
+                    toggleMenu();
+                }
+            });
+        }
+        
+        // Optimized smooth scrolling with passive listeners
+        const smoothScrollLinks = document.querySelectorAll('a[href^="#"]');
+        smoothScrollLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            }, { passive: false });
+        });
+        
+        // Intersection Observer for lazy animations (performance optimized)
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '50px 0px -50px 0px'
+        };
+        
+        const fadeInObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                    fadeInObserver.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+        
+        // Apply lazy animation to elements when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            const animatedElements = document.querySelectorAll('.fade-in-up:not(.loaded), .slide-in-left, .slide-in-right');
+            animatedElements.forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(30px)';
+                fadeInObserver.observe(el);
+            });
+        });
+        
+        // Preload critical resources on hover
+        let preloadTimeout;
+        const preloadLinks = document.querySelectorAll('a[href]');
+        preloadLinks.forEach(link => {
+            if (link.hostname === window.location.hostname) {
+                link.addEventListener('mouseenter', () => {
+                    clearTimeout(preloadTimeout);
+                    preloadTimeout = setTimeout(() => {
+                        const preloadLink = document.createElement('link');
+                        preloadLink.rel = 'prefetch';
+                        preloadLink.href = link.href;
+                        document.head.appendChild(preloadLink);
+                    }, 100);
+                }, { passive: true });
+            }
+        });
+        
+        // Image lazy loading optimization for better LCP
+        if ('loading' in HTMLImageElement.prototype) {
+            const images = document.querySelectorAll('img[data-src]');
+            images.forEach(img => {
+                img.src = img.dataset.src;
+                img.removeAttribute('data-src');
+            });
+        } else {
+            // Fallback for browsers without native lazy loading
+            const imageObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        img.src = img.dataset.src;
+                        img.removeAttribute('data-src');
+                        imageObserver.unobserve(img);
+                    }
+                });
+            });
+            
+            document.querySelectorAll('img[data-src]').forEach(img => {
+                imageObserver.observe(img);
+            });
+        }
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

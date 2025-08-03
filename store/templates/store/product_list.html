@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Shop - Subhalaxmi Collections{% endblock %}
+
+{% block description %}Browse our exquisite collection of women's fashion at Subhalaxmi Collections. From elegant dresses to chic accessories, find your perfect style.{% endblock %}
+
+{% block content %}
+  <div class="hero">
+    <h1>✨ Our Exquisite Collection ✨</h1>
+    <p>Discover timeless elegance and contemporary style in our carefully curated selection of women's fashion</p>
+  </div>
+
+  {% if products %}
+    <div class="product-grid">
+      {% for product in products %}
+        <div class="product-card decorative-border">
+          <div class="product-media">
+            <!-- Product Image -->
+            <div class="product-image-container">
+              {% with product.get_primary_image as product_image %}
+                {% if product_image %}
+                  <img src="{{ product_image.image.url }}" alt="{{ product_image.alt_text|default:product.name }}" class="product-img">
+                {% elif product.optimized_images %}
+                  {% with product.optimized_images|first as first_image %}
+                    <img src="{{ first_image.image.url }}" alt="{{ first_image.alt_text|default:product.name }}" class="product-img">
+                  {% endwith %}
+                {% else %}
+                  <div class="product-placeholder">
+                    <span>👗</span>
+                  </div>
+                {% endif %}
+              {% endwith %}
+            </div>
+          </div>
+          <h3 class="product-name">{{ product.name }}</h3>
+          {% if product.description %}
+            <p class="product-description">{{ product.description|truncatewords:15 }}</p>
+          {% endif %}
+          <div class="product-price">${{ product.price }}</div>
+          {% if product.category %}
+            <div class="product-category">{{ product.category }}</div>
+          {% endif %}
+          <div class="product-actions">
+            <a href="{% url 'store:product_detail' product.pk %}" class="btn">View Details</a>
+            <a href="#" class="btn btn-secondary">Add to Cart</a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <h2>🌟 Coming Soon!</h2>
+      <p>We're adding beautiful new pieces to our collection. Check back soon for amazing fashion finds!</p>
+      <a href="/" class="btn">Return Home</a>
+    </div>
+  {% endif %}
+
+  <div class="collection-footer">
+    <h2>Why Choose Subhalaxmi Collections?</h2>
+    <div class="features-grid">
+      <div class="feature">
+        <span class="feature-icon">👑</span>
+        <h4>Premium Quality</h4>
+        <p>Carefully selected fabrics and materials for lasting elegance</p>
+      </div>
+      <div class="feature">
+        <span class="feature-icon">🎨</span>
+        <h4>Unique Designs</h4>
+        <p>Fashion-forward pieces that make you stand out beautifully</p>
+      </div>
+      <div class="feature">
+        <span class="feature-icon">💝</span>
+        <h4>Perfect Fit</h4>
+        <p>Sizes designed to flatter and celebrate every woman's beauty</p>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

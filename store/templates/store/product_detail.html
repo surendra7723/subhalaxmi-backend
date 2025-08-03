@@ -1,0 +1,421 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }} - Subhalaxmi Collections{% endblock %}
+
+{% block description %}{{ product.description|default:"Discover this beautiful piece from Subhalaxmi Collections. Quality fashion that empowers and inspires." }}{% endblock %}
+
+{% block content %}
+<div class="product-detail-page">
+  
+  <!-- Product Hero Section -->
+  <section class="product-hero">
+    <div class="content-wrapper">
+      <div class="breadcrumb">
+        <a href="{% url 'store:product_list' %}">Shop</a> 
+        <span>/</span> 
+        {% if product.category %}
+          <span>{{ product.category }}</span>
+          <span>/</span>
+        {% endif %}
+        <span>{{ product.name }}</span>
+      </div>
+      
+      <div class="product-layout">
+        <!-- Product Media Gallery -->
+        <div class="product-gallery">
+          <div class="main-media">
+            <!-- All Product Images First -->
+            {% for image in product.optimized_images|default:product.images.all %}
+              <div class="media-container {% if image.is_primary %}active{% endif %}" data-type="image-{{ forloop.counter }}">
+                <img src="{{ image.image.url }}" alt="{{ image.alt_text|default:product.name }}" class="main-image">
+              </div>
+            {% endfor %}
+            
+            <!-- All Product Videos After Images -->
+            {% for video in product.optimized_videos|default:product.videos.all %}
+              <div class="media-container" data-type="video-{{ forloop.counter }}" data-video-hover>
+                <div class="video-placeholder-container">
+                  <img src="{% with product.get_primary_image as product_image %}{% if product_image %}{{ product_image.image.url }}{% endif %}{% endwith %}" alt="Video {{ forloop.counter }}" class="video-poster">
+                  <div class="hover-play-overlay">
+                    <div class="play-button">
+                      <span class="play-icon">▶</span>
+                    </div>
+                    <p>Click to play video {{ forloop.counter }}</p>
+                  </div>
+                </div>
+                <video 
+                  controls 
+                  class="main-video" 
+                  style="display: none;"
+                  poster="{% with product.get_primary_image as product_image %}{% if product_image %}{{ product_image.image.url }}{% endif %}{% endwith %}"
+                  data-src-mp4="{{ video.video.url }}">
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            {% endfor %}
+          </div>
+          
+          <!-- Media Thumbnails -->
+          <div class="media-thumbnails">
+            <!-- Image Thumbnails First -->
+            {% for image in product.images.all %}
+              <div class="thumbnail-item {% if image.is_primary %}active{% endif %}" data-target="image-{{ forloop.counter }}">
+                <img src="{{ image.image.url }}" alt="{{ image.alt_text|default:product.name }}">
+                <div class="media-label">Photo {{ forloop.counter }}</div>
+              </div>
+            {% endfor %}
+            
+            <!-- Video Thumbnails After Images -->
+            {% for video in product.videos.all %}
+              <div class="thumbnail-item" data-target="video-{{ forloop.counter }}">
+                <div class="video-thumbnail">
+                  <img src="{% with product.get_primary_image as product_image %}{% if product_image %}{{ product_image.image.url }}{% endif %}{% endwith %}" alt="Video {{ forloop.counter }}" class="thumbnail-poster">
+                  <div class="play-overlay">
+                    <span class="play-icon">▶</span>
+                  </div>
+                  <div class="media-label">Video {{ forloop.counter }}</div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+        
+        <!-- Product Information -->
+        <div class="product-info">
+          <div class="product-header">
+            <h1 class="product-title">{{ product.name }}</h1>
+            {% if product.category %}
+              <div class="product-category">{{ product.category }}</div>
+            {% endif %}
+            <div class="product-price">${{ product.price }}</div>
+          </div>
+          
+          {% if product.description %}
+            <div class="product-description">
+              <h3>Description</h3>
+              <p>{{ product.description }}</p>
+            </div>
+          {% endif %}
+          
+          <!-- Product Details -->
+          <div class="product-details">
+            <div class="detail-item">
+              <span class="detail-label">Availability:</span>
+              <span class="detail-value {% if product.stock > 0 %}in-stock{% else %}out-of-stock{% endif %}">
+                {% if product.stock > 0 %}
+                  In Stock ({{ product.stock }} available)
+                {% else %}
+                  Out of Stock
+                {% endif %}
+              </span>
+            </div>
+            
+            {% if product.sku %}
+              <div class="detail-item">
+                <span class="detail-label">SKU:</span>
+                <span class="detail-value">{{ product.sku }}</span>
+              </div>
+            {% endif %}
+          </div>
+          
+          <!-- Action Buttons -->
+          <div class="product-actions">
+            <div class="quantity-selector">
+              <label for="quantity">Quantity:</label>
+              <div class="quantity-controls">
+                <button type="button" class="qty-btn" onclick="decreaseQuantity()">-</button>
+                <input type="number" id="quantity" name="quantity" value="1" min="1" max="{{ product.stock }}">
+                <button type="button" class="qty-btn" onclick="increaseQuantity()">+</button>
+              </div>
+            </div>
+            
+            <div class="action-buttons">
+              {% if product.stock > 0 %}
+                <button class="btn btn-primary add-to-cart">Add to Cart</button>
+                <button class="btn btn-secondary buy-now">Buy Now</button>
+              {% else %}
+                <button class="btn btn-disabled" disabled>Out of Stock</button>
+              {% endif %}
+              <button class="btn btn-outline wishlist-btn">♡ Add to Wishlist</button>
+            </div>
+          </div>
+          
+          <!-- Share Section -->
+          <div class="product-share">
+            <h4>Share this product:</h4>
+            <div class="share-buttons">
+              <a href="#" class="share-btn facebook">Facebook</a>
+              <a href="#" class="share-btn twitter">Twitter</a>
+              <a href="#" class="share-btn pinterest">Pinterest</a>
+              <a href="#" class="share-btn whatsapp">WhatsApp</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Product Media Gallery -->
+  {% if product.images.count > 1 or product.videos.count > 0 %}
+    <section class="product-gallery-extended">
+      <div class="content-wrapper">
+        <h2>Complete Product Gallery</h2>
+        
+        <!-- Images Section First -->
+        {% if has_multiple_images or product.optimized_images %}
+          <div class="media-section">
+            <h3><span class="media-icon">📸</span> Product Photos</h3>
+            <div class="images-gallery">
+              {% for image in product.optimized_images|default:product.images.all %}
+                <div class="gallery-item image-item">
+                  <img src="{{ image.image.url }}" alt="{{ image.alt_text|default:product.name }}" onclick="openImageModal(this)">
+                  <div class="image-label">
+                    {% if image.is_primary %}
+                      <span class="primary-badge">Main Photo</span>
+                    {% else %}
+                      Photo {{ forloop.counter }}
+                    {% endif %}
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+        
+        <!-- Videos Section After Images -->
+        {% if has_videos or product.optimized_videos %}
+          <div class="media-section">
+            <h3><span class="media-icon">🎥</span> Product Videos</h3>
+            <div class="videos-gallery">
+              {% for video in product.optimized_videos|default:product.videos.all %}
+                <div class="gallery-item video-item" data-video-hover>
+                  <div class="video-placeholder-container">
+                    <img src="{% with product.get_primary_image as product_image %}{% if product_image %}{{ product_image.image.url }}{% endif %}{% endwith %}" alt="Video {{ forloop.counter }}" class="video-poster">
+                    <div class="hover-play-overlay">
+                      <div class="play-button">
+                        <span class="play-icon">▶</span>
+                      </div>
+                      <p>Hover to preview</p>
+                    </div>
+                    <div class="video-label">Video {{ forloop.counter }}</div>
+                  </div>
+                  <video 
+                    controls 
+                    style="display: none;"
+                    poster="{% with product.get_primary_image as product_image %}{% if product_image %}{{ product_image.image.url }}{% endif %}{% endwith %}"
+                    data-src-mp4="{{ video.video.url }}">
+                    Your browser does not support the video tag.
+                  </video>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    </section>
+  {% endif %}
+  
+  <!-- Product Features -->
+  <section class="product-features">
+    <div class="content-wrapper">
+      <h2>Why You'll Love This Piece</h2>
+      <div class="features-grid">
+        <div class="feature-item">
+          <div class="feature-icon">✨</div>
+          <h3>Premium Quality</h3>
+          <p>Crafted with the finest materials and attention to detail</p>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">🌟</div>
+          <h3>Timeless Design</h3>
+          <p>Classic styles that never go out of fashion</p>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">💖</div>
+          <h3>Comfort Focused</h3>
+          <p>Designed for all-day comfort without compromising style</p>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">🌍</div>
+          <h3>Sustainably Made</h3>
+          <p>Environmentally conscious production processes</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Care Instructions -->
+  <section class="care-instructions">
+    <div class="content-wrapper">
+      <div class="care-content">
+        <h2>Care Instructions</h2>
+        <div class="care-grid">
+          <div class="care-item">
+            <div class="care-icon">🧺</div>
+            <h4>Washing</h4>
+            <p>Machine wash cold with like colors. Use gentle cycle.</p>
+          </div>
+          <div class="care-item">
+            <div class="care-icon">🌡️</div>
+            <h4>Drying</h4>
+            <p>Tumble dry low or hang dry. Avoid direct sunlight.</p>
+          </div>
+          <div class="care-item">
+            <div class="care-icon">👔</div>
+            <h4>Ironing</h4>
+            <p>Iron on low heat if needed. Steam is preferred.</p>
+          </div>
+          <div class="care-item">
+            <div class="care-icon">🏠</div>
+            <h4>Storage</h4>
+            <p>Store in a cool, dry place. Use hangers when possible.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Related Products or Back to Shop -->
+  <section class="related-section">
+    <div class="content-wrapper">
+      <h2>Continue Shopping</h2>
+      <p>Discover more beautiful pieces in our collection</p>
+      <div class="section-actions">
+        <a href="{% url 'store:product_list' %}" class="btn btn-primary">Browse All Products</a>
+        {% if product.category %}
+          <a href="{% url 'store:product_list' %}?category={{ product.category }}" class="btn btn-secondary">More {{ product.category }}</a>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+// Quantity controls
+function increaseQuantity() {
+    const qty = document.getElementById('quantity');
+    const max = parseInt(qty.getAttribute('max'));
+    if (parseInt(qty.value) < max) {
+        qty.value = parseInt(qty.value) + 1;
+    }
+}
+
+function decreaseQuantity() {
+    const qty = document.getElementById('quantity');
+    if (parseInt(qty.value) > 1) {
+        qty.value = parseInt(qty.value) - 1;
+    }
+}
+
+// Image modal functionality
+function openImageModal(img) {
+    const modal = document.createElement('div');
+    modal.className = 'image-modal';
+    modal.innerHTML = `
+        <div class="modal-overlay" onclick="closeImageModal()">
+            <div class="modal-content">
+                <img src="${img.src}" alt="${img.alt}">
+                <button class="modal-close" onclick="closeImageModal()">×</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    document.body.style.overflow = 'hidden';
+}
+
+function closeImageModal() {
+    const modal = document.querySelector('.image-modal');
+    if (modal) {
+        modal.remove();
+        document.body.style.overflow = 'auto';
+    }
+}
+
+// Hover to load video functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const videoContainers = document.querySelectorAll('[data-video-hover]');
+    
+    videoContainers.forEach(container => {
+        const placeholder = container.querySelector('.video-placeholder-container');
+        const video = container.querySelector('video');
+        let isLoaded = false;
+        
+        // Mouse enter - load and show video
+        container.addEventListener('mouseenter', function() {
+            if (!isLoaded && video) {
+                loadVideo(video);
+                isLoaded = true;
+            }
+            
+            // Hide placeholder and show video
+            if (placeholder) placeholder.style.display = 'none';
+            if (video) {
+                video.style.display = 'block';
+                video.play().catch(e => console.log('Video play failed:', e));
+            }
+        });
+        
+        // Mouse leave - pause video but keep it loaded
+        container.addEventListener('mouseleave', function() {
+            if (video) {
+                video.pause();
+            }
+        });
+    });
+    
+    function loadVideo(video) {
+        if (!video) return;
+        
+        const mp4Src = video.getAttribute('data-src-mp4');
+        
+        if (mp4Src) {
+            const source = document.createElement('source');
+            source.src = mp4Src;
+            source.type = 'video/mp4';
+            video.appendChild(source);
+            video.load(); // Reload the video element with new sources
+        }
+    }
+    
+    // Media gallery switching
+    const thumbnails = document.querySelectorAll('.thumbnail-item');
+    const mediaContainers = document.querySelectorAll('.media-container');
+    
+    thumbnails.forEach(thumbnail => {
+        thumbnail.addEventListener('click', function() {
+            const target = this.getAttribute('data-target');
+            
+            // Remove active class from all thumbnails and media containers
+            thumbnails.forEach(t => t.classList.remove('active'));
+            mediaContainers.forEach(m => m.classList.remove('active'));
+            
+            // Add active class to clicked thumbnail
+            this.classList.add('active');
+            
+            // Show corresponding media
+            const targetContainer = document.querySelector(`[data-type="${target}"]`);
+            if (targetContainer) {
+                targetContainer.classList.add('active');
+                
+                // If it's a video, handle video loading
+                if (target.startsWith('video')) {
+                    const video = targetContainer.querySelector('video');
+                    const placeholder = targetContainer.querySelector('.video-placeholder-container');
+                    
+                    // Load video if not loaded and show it
+                    if (video && !video.querySelector('source')) {
+                        loadVideo(video);
+                    }
+                    
+                    // Show video directly when thumbnail is clicked
+                    if (placeholder) placeholder.style.display = 'none';
+                    if (video) video.style.display = 'block';
+                }
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

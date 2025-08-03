@@ -1,0 +1,114 @@
+{% load static %}
+
+<div class="product-card decorative-border">
+  <div class="product-media" data-product-video-hover>
+    {% if has_video %}
+      <!-- Product Image (default display) -->
+      <div class="product-image-container">
+        {% if primary_image %}
+          <img src="{{ primary_image.image.url }}" alt="{{ primary_image.alt_text|default:product.name }}" class="product-img">
+        {% else %}
+          <div class="product-placeholder">
+            <span>👗</span>
+          </div>
+        {% endif %}
+        <div class="hover-video-overlay">
+          <div class="play-button-small">
+            <span class="play-icon">▶</span>
+          </div>
+          <p>Hover to preview</p>
+        </div>
+      </div>
+      
+      <!-- Product Video (shown on hover) -->
+      <div class="product-video-container">
+        <video class="product-video" muted loop preload="none">
+          <source src="{{ first_video.video.url }}" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+    {% else %}
+      <!-- Product Image Only -->
+      <div class="product-image-container">
+        {% if primary_image %}
+          <img src="{{ primary_image.image.url }}" alt="{{ primary_image.alt_text|default:product.name }}" class="product-img">
+        {% else %}
+          <div class="product-placeholder">
+            <span>👗</span>
+          </div>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+  
+  <div class="product-info">
+    <div class="product-header">
+      <h3 class="product-name">
+        <a href="{% url 'store:product_detail' product.pk %}">{{ product.name }}</a>
+      </h3>
+      {% if show_category and product.category %}
+        <div class="product-category">{{ product.category }}</div>
+      {% endif %}
+      {% if show_brand and product.brand %}
+        <div class="product-brand">{{ product.brand }}</div>
+      {% endif %}
+    </div>
+    
+    <div class="product-details">
+      <div class="product-price">
+        {% if product.discount > 0 %}
+          <span class="price-original">${{ product.price }}</span>
+          <span class="price-sale">${{ product.price|floatformat:2 }}</span>
+          <span class="discount-badge">{{ product.discount }}% OFF</span>
+        {% else %}
+          <span class="price-current">${{ product.price }}</span>
+        {% endif %}
+      </div>
+      
+      {% if product.average_rating > 0 %}
+        <div class="product-rating">
+          <div class="stars">
+            {% for i in "12345" %}
+              {% if forloop.counter <= product.average_rating %}
+                <span class="star filled">★</span>
+              {% else %}
+                <span class="star">☆</span>
+              {% endif %}
+            {% endfor %}
+          </div>
+          <span class="rating-count">({{ product.review_count }})</span>
+        </div>
+      {% endif %}
+    </div>
+    
+    <div class="product-badges">
+      {% if product.is_new %}
+        <span class="badge badge-new">New</span>
+      {% endif %}
+      {% if product.is_featured %}
+        <span class="badge badge-featured">Featured</span>
+      {% endif %}
+      {% if product.is_best_seller %}
+        <span class="badge badge-bestseller">Best Seller</span>
+      {% endif %}
+      {% if product.is_on_sale %}
+        <span class="badge badge-sale">Sale</span>
+      {% endif %}
+    </div>
+    
+    <div class="product-actions">
+      <a href="{% url 'store:product_detail' product.pk %}" class="btn btn-primary">
+        View Details
+      </a>
+      {% if product.stock > 0 %}
+        <button class="btn btn-secondary" onclick="quickAddToCart({{ product.pk }})">
+          Quick Add
+        </button>
+      {% else %}
+        <button class="btn btn-disabled" disabled>
+          Out of Stock
+        </button>
+      {% endif %}
+    </div>
+  </div>
+</div>

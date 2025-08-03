@@ -1,0 +1,13 @@
+vevn/
+logs/
+.vevn
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pdb
+test_webp.py
+VIDEO_IMPLEMRENTATION_SUMMARY.md
+LIGHTHOUSE_OPTIMIZATION_GUIDE.md
+db.sqlite3
+OPTIMIZATION_GUIDE.md
